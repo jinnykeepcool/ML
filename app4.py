@@ -469,35 +469,47 @@ with right:
     # สร้าง HTML รายการสินค้าใน TAKE AWAY
     takeaway_content_html = ""
 
-    # 1. สินค้าส่วนต่าง (ถ้ามี)
+    # 1. สินค้าส่วนต่าง (ถ้ามี) เรียงจากแพงไปถูก
     if excess_counts:
-        for name, qty in excess_counts.items():
+        for name, qty in sorted(
+            excess_counts.items(),
+            key=lambda x: PRICE_MAP[x[0]],
+            reverse=True
+        ):
             pay_val = qty * PRICE_MAP[name]
             takeaway_content_html += f"""<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-<span style="width: 20px;">{qty}</span>
-<span style="flex-grow: 1; padding-right: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{name}</span>
-<span style="font-weight: bold;">{pay_val:.2f}</span>
-</div>"""
+    <span style="width: 20px;">{qty}</span>
+    <span style="flex-grow: 1; padding-right: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{name}</span>
+    <span style="font-weight: bold;">{pay_val:.2f}</span>
+    </div>"""
 
-    # 2. หัวข้อโปรโมชั่น และ สินค้าจ่ายเงินในโปรโมชั่น
+   # 2. หัวข้อโปรโมชั่น และ สินค้าจ่ายเงินในโปรโมชั่น
     if promo and paid_promo_counts:
         takeaway_content_html += f"""<div style="font-weight: bold; margin-top: 6px; margin-bottom: 4px;">Promotion {pay_req} Free {free_req}</div>"""
-        for name, qty in paid_promo_counts.items():
+        for name, qty in sorted(
+            paid_promo_counts.items(),
+            key=lambda x: PRICE_MAP[x[0]],
+            reverse=True
+        ):
             pay_val = qty * PRICE_MAP[name]
             takeaway_content_html += f"""<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-<span style="width: 20px;">{qty}</span>
-<span style="flex-grow: 1; padding-right: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{name}</span>
-<span style="font-weight: bold;">{pay_val:.2f}</span>
-</div>"""
+    <span style="width: 20px;">{qty}</span>
+    <span style="flex-grow: 1; padding-right: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{name}</span>
+    <span style="font-weight: bold;">{pay_val:.2f}</span>
+    </div>"""
 
-    # 3. เส้นแบ่ง Free และ รายการสินค้าแถมฟรี
+  # 3. เส้นแบ่ง Free และ รายการสินค้าแถมฟรี
     if promo and free_counts_promo:
         takeaway_content_html += """<div style="text-align: center; font-weight: bold; margin: 6px 0;">----------- Free -----------</div>"""
-        for name, qty in free_counts_promo.items():
+        for name, qty in sorted(
+            free_counts_promo.items(),
+            key=lambda x: PRICE_MAP[x[0]],
+            reverse=True
+        ):
             takeaway_content_html += f"""<div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-<span style="width: 20px;">{qty}</span>
-<span style="flex-grow: 1; padding-right: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{name}</span>
-</div>"""
+    <span style="width: 20px;">{qty}</span>
+    <span style="flex-grow: 1; padding-right: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{name}</span>
+    </div>"""
 
     # โครงสร้างใบเสร็จ HTML ทั้งหมด
     receipt_html = f"""<div style="background-color: #ffffff; color: #111111; font-family: 'Courier New', Courier, monospace; font-size: 13px; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); max-width: 360px; margin: 10px auto; line-height: 1.4;">
